@@ -1,0 +1,19 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "gamelift:CreatePlayerSession",
+                "gamelift:CreatePlayerSessions",
+                "gamelift:ListFleets",
+                "gamelift:CreateGameSession",
+                "gamelift:SearchGameSessions",
+                "gamelift:DescribeGameSessions",
+                "gamelift:ListGameServerGroups"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
