@@ -5,7 +5,7 @@
             "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": "cognito-idp:InitiateAuth",
-            "Resource": <cognito-user-pool-arn-here>
+            "Resource": "*"
         }
     ]
 }
