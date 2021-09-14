@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-//#include "Runtime/Online/HTTP/Public/HttpModule.h"
 #include "Http.h"
 #include "Offline_MainMenuWidget.generated.h"
 
@@ -15,24 +14,39 @@ class GAMELIFT_UE4_API UOffline_MainMenuWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	UOffline_MainMenuWidget(const FObjectInitializer& ObjectInitializer);
-	
+	UOfflineMainMenuWidget(const FObjectInitializer& ObjectInitializer);
 
 	UFUNCTION(BlueprintCallable)
 		void OnLoginClicked();
 	
 	UPROPERTY(EditAnywhere, BluePrintReadWrite)
-		FString user;
+		FString ApiGatewayEndpoint;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite)
+		FString LoginURI;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite)
+		FString StartSessionURI;
+	
+	UPROPERTY(VisibleAnywhere, BluePrintReadWrite)
+		FString user;
+
+	UPROPERTY(VisibleAnywhere, BluePrintReadWrite)
 		FString pass;
+
+	UPROPERTY(VisibleAnywhere, BluePrintReadOnly)
+		FString IpAddress;
+
+	UPROPERTY(VisibleAnywhere, BluePrintReadOnly)
+		FString Port;
 
 
 private:
 	FHttpModule* Http;
 
-	void LoginRequest(FString user, FString pass);
+	void LoginRequest(FString usr, FString pwd);
 	void OnLoginResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
-	void OnGetDataResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+	void StartSessionRequest(FString idt);
+	void OnStartSessionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 
 };
