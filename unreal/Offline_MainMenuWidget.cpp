@@ -1,29 +1,25 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include <string>
-#include "Offline_MainMenuWidget.h"
-//#include "Runtime/Online/HTTP/Public/HttpModule.h"
+
+#include "OfflineMainMenuWidget.h"
 #include "Json.h"
 #include "JsonUtilities.h"
 
-// TODO Update with your own API Gateway Endpoint
-const static string API_GATEWAY_ENDPOINT = TEXT("https://your-endpoint.execute-api.us-west-2.amazonaws.com/test");
-const static string LOGIN_URI = TEXT("/login");
-const static string STARTSESSION_URI = TEXT("/startsession");
 
-UOffline_MainMenuWidget::UOffline_MainMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
+UOfflineMainMenuWidget::UOfflineMainMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
 	Http = &FHttpModule::Get();
+
+	ApiGatewayEndpoint = FString::Printf(TEXT("https://your-endpoint.execute-api.us-west-2.amazonaws.com/test"));
+	LoginURI = FString::Printf(TEXT("/login"));
+	StartSessionURI = FString::Printf(TEXT("/startsession"));
+
 }
 
-
-void UOffline_MainMenuWidget::OnLoginClicked() {
-	UE_LOG(LogTemp, Warning, TEXT("Login button clicked\nuser: %s"), *user);
-	UE_LOG(LogTemp, Warning, TEXT("pass: %s"), *pass);
-
+void UOfflineMainMenuWidget::OnLoginClicked() {
 	LoginRequest(user, pass);
 }
 
-void UOffline_MainMenuWidget::LoginRequest(FString usr, FString pwd) {
+void UOfflineMainMenuWidget::LoginRequest(FString usr, FString pwd) {
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
 	JsonObject->SetStringField(TEXT("username"), *FString::Printf(TEXT("%s"), *usr));
 	JsonObject->SetStringField(TEXT("password"), *FString::Printf(TEXT("%s"), *pwd));
@@ -34,58 +30,50 @@ void UOffline_MainMenuWidget::LoginRequest(FString usr, FString pwd) {
 
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> LoginHttpRequest = Http->CreateRequest();
 
-
 	LoginHttpRequest->SetVerb("POST");
-	LoginHttpRequest->SetURL(*FString::Printf(API_GATEWAY_ENDPOINT + LOGIN_URI));
+	LoginHttpRequest->SetURL(ApiGatewayEndpoint + LoginURI);
 	LoginHttpRequest->SetHeader("Content-Type", "application/json");
 	LoginHttpRequest->SetContentAsString(JsonBody);
-	LoginHttpRequest->OnProcessRequestComplete().BindUObject(this, &UOffline_MainMenuWidget::OnLoginResponse);
+	LoginHttpRequest->OnProcessRequestComplete().BindUObject(this, &UOfflineMainMenuWidget::OnLoginResponse);
 	LoginHttpRequest->ProcessRequest();
-
-
 }
 
-
-void UOffline_MainMenuWidget::OnLoginResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful) {
+void UOfflineMainMenuWidget::OnLoginResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful) {
 	if (bWasSuccessful) {
 		TSharedPtr<FJsonObject> JsonObject;
 		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 
 		if (FJsonSerializer::Deserialize(Reader, JsonObject)) {
-			FString IdToken = JsonObject->GetStringField("id_token");
 
-			//UE_LOG(LogTemp, Warning, TEXT("%s"), *IdToken);
+			FString IdToken = JsonObject->GetObjectField("tokens")->GetStringField("IdToken");
 
-			TSharedRef<IHttpRequest, ESPMode::ThreadSafe> GetDataHttpRequest = Http->CreateRequest();
-
-
-			GetDataHttpRequest->SetVerb("GET");
-			GetDataHttpRequest->SetURL(*FString::Printf(API_GATEWAY_ENDPOINT + STARTSESSION_URI));
-			GetDataHttpRequest->SetHeader("Content-Type", "application/json");
-			GetDataHttpRequest->SetHeader("Authorization", IdToken);
-			GetDataHttpRequest->OnProcessRequestComplete().BindUObject(this, &UOffline_MainMenuWidget::OnGetDataResponse);
-			GetDataHttpRequest->ProcessRequest();
+			StartSessionRequest(IdToken);
 		}
-
 	}
-
-
 }
 
-void UOffline_MainMenuWidget::OnGetDataResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful) {
+void UOfflineMainMenuWidget::StartSessionRequest(FString idt) {
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> StartSessionHttpRequest = Http->CreateRequest();
+
+	StartSessionHttpRequest->SetVerb("GET");
+	StartSessionHttpRequest->SetURL(ApiGatewayEndpoint + StartSessionURI);
+	StartSessionHttpRequest->SetHeader("Content-Type", "application/json");
+	StartSessionHttpRequest->SetHeader("Authorization", idt);
+	StartSessionHttpRequest->OnProcessRequestComplete().BindUObject(this, &UOfflineMainMenuWidget::OnStartSessionResponse);
+	StartSessionHttpRequest->ProcessRequest();
+}
+
+void UOfflineMainMenuWidget::OnStartSessionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful) {
 	if (bWasSuccessful) {
 		TSharedPtr<FJsonObject> JsonObject;
 		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 
 		if (FJsonSerializer::Deserialize(Reader, JsonObject)) {
-			FString IP = JsonObject->GetStringField("ip");
-			FString Port = JsonObject->GetStringField("port");
+			IpAddress = JsonObject->GetObjectField("PlayerSession")->GetStringField("IpAddress");
+			Port = JsonObject->GetObjectField("PlayerSession")->GetStringField("Port");
 
-			UE_LOG(LogTemp, Warning, TEXT("Success!\nIP: %s\nPort: %s"), *IP, *Port);
-
-			//ConnectToServer(IP, Port);
-		}
-
+			//Widget BP to connect to GameLift server with IpAddress
+		
+		}	
 	}
 }
-
