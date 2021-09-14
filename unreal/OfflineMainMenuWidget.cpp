@@ -9,7 +9,8 @@
 UOfflineMainMenuWidget::UOfflineMainMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
 	Http = &FHttpModule::Get();
 
-	ApiGatewayEndpoint = FString::Printf(TEXT("https://da863fd2y9.execute-api.us-west-2.amazonaws.com/test"));
+	//TODO update with your API Gateway endpoint
+	ApiGatewayEndpoint = FString::Printf(TEXT("https://your-endpoint.execute-api.us-west-2.amazonaws.com/test"));
 	LoginURI = FString::Printf(TEXT("/login"));
 	StartSessionURI = FString::Printf(TEXT("/startsession"));
 

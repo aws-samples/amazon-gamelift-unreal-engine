@@ -15,8 +15,8 @@ This repository includes:
 
 Code as referenced in each video episode:
 * Episode 5 -> [lambda/GameLiftUnreal-StartGameLiftSession.py](lambda/GameLiftUnreal-StartGameLiftSession.py)
-* Episode 7 -> [lambda/GameLiftUnreal-CognitoLogin.py](lambda/GameLiftUnreal-CognitoLogin.py)
-* Episode 8 -> [unreal/Offline_MainMenuWidget.cpp](unreal/Offline_MainMenuWidget.cpp), [unreal/Offline_MainMenuWidget.h](unreal/Offline_MainMenuWidget.h)
+* Episode 6 -> [lambda/GameLiftUnreal-CognitoLogin.py](lambda/GameLiftUnreal-CognitoLogin.py)
+* Episode 7 -> [unreal/OfflineMainMenuWidget.cpp](unreal/OfflineMainMenuWidget.cpp), [unreal/OfflineMainMenuWidget.h](unreal/OfflineMainMenuWidget.h)
 
 ## Security
 
