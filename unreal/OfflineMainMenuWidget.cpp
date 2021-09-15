@@ -4,6 +4,7 @@
 #include "OfflineMainMenuWidget.h"
 #include "Json.h"
 #include "JsonUtilities.h"
+#include "Kismet/GameplayStatics.h"
 
 
 UOfflineMainMenuWidget::UOfflineMainMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
@@ -74,8 +75,9 @@ void UOfflineMainMenuWidget::OnStartSessionResponse(FHttpRequestPtr Request, FHt
 			IpAddress = JsonObject->GetObjectField("PlayerSession")->GetStringField("IpAddress");
 			Port = JsonObject->GetObjectField("PlayerSession")->GetStringField("Port");
 
-			//Widget BP to connect to GameLift server with IpAddress
-		
+			FString LevelName = IpAddress + ":" + Port;
+			
+			UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName), false);		
 		}
 	
 	}
