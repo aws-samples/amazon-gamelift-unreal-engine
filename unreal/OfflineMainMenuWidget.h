@@ -21,26 +21,21 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void OnLoginClicked();
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite)
+	UPROPERTY(EditAnywhere)
 		FString ApiGatewayEndpoint;
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite)
+	UPROPERTY(EditAnywhere)
 		FString LoginURI;
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite)
+	UPROPERTY(EditAnywhere)
 		FString StartSessionURI;
 
-	UPROPERTY(VisibleAnywhere, BluePrintReadWrite)
+	UPROPERTY(BluePrintReadWrite)
 		FString user;
 
-	UPROPERTY(VisibleAnywhere, BluePrintReadWrite)
+	UPROPERTY(BluePrintReadWrite)
 		FString pass;
 
-	UPROPERTY(VisibleAnywhere, BluePrintReadOnly)
-		FString IpAddress;
-
-	UPROPERTY(VisibleAnywhere, BluePrintReadOnly)
-		FString Port;
 
 private:
 	FHttpModule* Http;
