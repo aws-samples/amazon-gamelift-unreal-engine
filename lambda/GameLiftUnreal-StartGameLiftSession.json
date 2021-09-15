@@ -5,13 +5,14 @@
             "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": [
+                "gamelift:CreateGameSession",
                 "gamelift:CreatePlayerSession",
                 "gamelift:CreatePlayerSessions",
-                "gamelift:ListFleets",
-                "gamelift:CreateGameSession",
-                "gamelift:SearchGameSessions",
+                "gamelift:DescribeGameSessionDetails",
                 "gamelift:DescribeGameSessions",
-                "gamelift:ListGameServerGroups"
+                "gamelift:ListFleets",
+                "gamelift:ListGameServerGroups",
+                "gamelift:SearchGameSessions"
             ],
             "Resource": "*"
         }
