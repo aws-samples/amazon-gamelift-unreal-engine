@@ -10,6 +10,8 @@ client = boto3.client('cognito-idp')
 
 def lambda_handler(event, context):
     username = event['username']
+    msg = "Password required"
+    resp = {}
     if 'password' in event:
         resp, msg = initiate_auth(username, event['password'])
     if msg != None:
