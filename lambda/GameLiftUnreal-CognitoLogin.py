@@ -2,8 +2,11 @@
 # SPDX-License-Identifier: MIT-0
 
 import boto3
+import os
 
-# TODO Set to your created app client id
+# TODO Set to your created app client id. For testing purposes, it is possible to use a hardcoded string here, but please consider using an environment variable.
+# i.e. USER_POOL_APP_CLIENT_ID = os.environ['USER_POOL_APP_CLIENT_ID']
+# (See https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html for info on programmatically defining environment variables in Lambda.)
 USER_POOL_APP_CLIENT_ID = ''
 
 client = boto3.client('cognito-idp')
