@@ -3,6 +3,7 @@
 
 import boto3
 import os
+import sys
 
 # TODO Set to your created app client id. For testing purposes, it is possible to use a hardcoded string here, but please consider using an environment variable.
 # i.e. USER_POOL_APP_CLIENT_ID = os.environ['USER_POOL_APP_CLIENT_ID']
@@ -12,21 +13,21 @@ USER_POOL_APP_CLIENT_ID = ''
 client = boto3.client('cognito-idp')
 
 def lambda_handler(event, context):
-    username = event['username']
-    msg = "Password required"
-    resp = {}
-    if 'password' in event:
-        resp, msg = initiate_auth(username, event['password'])
+    if 'username' not in event or 'password' not in event:
+        return {
+            'status': 'fail',
+            'msg': 'Username and password are required'
+        }
+    resp, msg = initiate_auth(event['username'], event['password'])
     if msg != None:
         return {
             'status': 'fail', 
             'msg': msg
         }
-    response = {
+    return {
         'status': 'success',
         'tokens': resp['AuthenticationResult']
     }
-    return response
 
 def initiate_auth(username, password):
     try:
@@ -37,8 +38,11 @@ def initiate_auth(username, password):
                 'USERNAME': username,
                 'PASSWORD': password
             })
+    except client.exceptions.InvalidParameterException as e:
+        return None, "Username and password must not be empty"
     except (client.exceptions.NotAuthorizedException, client.exceptions.UserNotFoundException) as e:
-        return None, "The username or password is incorrect"
+        return None, "Username or password is incorrect"
     except Exception as e:
+        print("Uncaught exception:", e, file=sys.stderr)
         return None, "Unknown error"
     return resp, None
