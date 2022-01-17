@@ -72,8 +72,8 @@ void UOfflineMainMenuWidget::OnStartSessionResponse(FHttpRequestPtr Request, FHt
 		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 
 		if (FJsonSerializer::Deserialize(Reader, JsonObject)) {
-			IpAddress = JsonObject->GetObjectField("PlayerSession")->GetStringField("IpAddress");
-			Port = JsonObject->GetObjectField("PlayerSession")->GetStringField("Port");
+			FString IpAddress = JsonObject->GetObjectField("PlayerSession")->GetStringField("IpAddress");
+			FString Port = JsonObject->GetObjectField("PlayerSession")->GetStringField("Port");
 
 			FString LevelName = IpAddress + ":" + Port;
 			
