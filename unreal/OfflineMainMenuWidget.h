@@ -11,6 +11,8 @@
  * 
  */
 UCLASS()
+
+//TODO change GAMELIFT_UE4_API to <YOUR_PROJECT_NAME>_API
 class GAMELIFT_UE4_API UOfflineMainMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
